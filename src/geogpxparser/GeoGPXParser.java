@@ -35,6 +35,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.w3c.dom.Document;
@@ -54,6 +55,7 @@ public class GeoGPXParser {
     private String file = null;
     
     private final DateTimeFormatter XML_DATE_TIME_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+    private final DateTimeFormatter OUTPUT_DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
 
     public static void main(String[] args) {
         if (args == null || args.length == 0) {
@@ -64,7 +66,7 @@ public class GeoGPXParser {
         }
         GeoGPXParser parser = new GeoGPXParser(args[0]);
         List<Geocache> caches = parser.parse();
-        parser.saveCSV("caches.txt", caches);
+        parser.saveTextFile("caches.txt", caches);
         info("Done!");
     }
 
@@ -80,7 +82,7 @@ public class GeoGPXParser {
         return parseXmlFilesToObjects(this.file);
     }
     
-    public void saveCSV(String fileName, List<Geocache> caches) {
+    public void saveTextFile(String fileName, List<Geocache> caches) {
         info("Writing the caches into a file...");
         final String separator = "\t";
 
@@ -106,9 +108,7 @@ public class GeoGPXParser {
             sb.append(cache.getSize()).append(separator);
             sb.append(cache.getDifficulty()).append(separator);
             sb.append(cache.getTerrain()).append(separator);
-            sb.append(cache.getPublished().getYear()).append("-");
-            sb.append(cache.getPublished().getMonthOfYear()).append("-");
-            sb.append(cache.getPublished().getDayOfMonth()).append(separator);
+            sb.append(OUTPUT_DATE_TIME_FORMAT.print(cache.getPublished())).append(separator);
             sb.append(cache.getOwner().replace(separator, "")).append(separator);
             sb.append("\n");
         }
@@ -182,22 +182,10 @@ public class GeoGPXParser {
                 cache.setType(Geocache.CacheType.Other);
                 break;
         }
-        switch (getSubElementContent(groundspeak,"groundspeak:container")) {
-            case "Micro":
-                cache.setSize(Geocache.CacheSize.Micro);
-                break;
-            case "Small":
-                cache.setSize(Geocache.CacheSize.Small);
-                break;
-            case "Regular":
-                cache.setSize(Geocache.CacheSize.Regular);
-                break;
-            case "Large":
-                cache.setSize(Geocache.CacheSize.Large);
-                break;
-            default:
-                cache.setSize(Geocache.CacheSize.Not_chosen);
-                break;
+        try {
+            cache.setSize(Geocache.CacheSize.valueOf(getSubElementContent(groundspeak,"groundspeak:container")));
+        } catch (IllegalArgumentException ex) {
+            cache.setSize(Geocache.CacheSize.Not_chosen);
         }
         cache.setDifficulty(Float.parseFloat(getSubElementContent(groundspeak,"groundspeak:difficulty")));
         cache.setTerrain(Float.parseFloat(getSubElementContent(groundspeak,"groundspeak:terrain")));
@@ -232,17 +220,17 @@ public class GeoGPXParser {
         }
         info("Found "+files.length+" files.");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        for (File file : files) {
-            info("Parsing file "+file+"...");
+        for (File xmlFile : files) {
+            info("Parsing file "+xmlFile+"...");
             try {
                 DocumentBuilder db = dbFactory.newDocumentBuilder();
-                Document xml = db.parse(file);
+                Document xml = db.parse(xmlFile);
                 caches.addAll(this.parseXMLtoObjects(xml));
             } catch (ParserConfigurationException | SAXException xmlException) {
                 System.err.println("Error in parsing XML!");
                 xmlException.printStackTrace();
             } catch (IllegalArgumentException | IOException ioException) {
-                System.err.println("Error in reading file '"+file+"'!");
+                System.err.println("Error in reading file '"+xmlFile+"'!");
                 ioException.printStackTrace();
             }
         }

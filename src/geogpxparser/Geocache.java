@@ -180,10 +180,26 @@ public class Geocache {
     }
 
     public String getHint(boolean decrypted) {
-        // TODO: ROT13
-        return hint;
+        if( decrypted ) {
+            return hint;
+        }
+        StringBuilder encryptedHint = new StringBuilder();
+        for (char character : hint.toCharArray()) {
+            if(character >= 'A' && character <= 'Z') { 
+                encryptedHint.append((char)((((character+13) - 'A') % 26) + 'A'));
+            } else if(character >= 'a' && character <= 'z') {
+                encryptedHint.append((char)((((character+13)  - 'a') % 26) + 'a'));
+            } else {
+                encryptedHint.append(character);
+            }
+        }
+        return encryptedHint.toString();
     }
 
+    /**
+     * Sets the hint for this cache. The hint should be set in plain text!
+     * @param hint The hint to be set.
+     */
     public void setHint(String hint) {
         this.hint = hint;
     }
