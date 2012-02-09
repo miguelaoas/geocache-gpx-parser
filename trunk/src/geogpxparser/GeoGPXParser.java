@@ -1,5 +1,5 @@
 /*
- * The MIT License - Copyright (c) 2011 ZeroOne
+ * The MIT License - Copyright (c) 2011-2012 ZeroOne
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,6 +43,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import static geogpxparser.Geocache.CacheType;
 
 /**
  * This class can be used to parse geocaches from a Groundspeak .gpx file
@@ -170,16 +171,32 @@ public class GeoGPXParser {
         cache.setOwner(getSubElementContent(groundspeak,"groundspeak:owner"));
         switch (getSubElementContent(groundspeak,"groundspeak:type")) {
             case "Traditional Cache":
-                cache.setType(Geocache.CacheType.Traditional);
+                cache.setType(CacheType.Traditional);
                 break;
             case "Unknown Cache":
-                cache.setType(Geocache.CacheType.Mystery);
+                cache.setType(CacheType.Mystery);
                 break;
             case "Multi-cache":
-                cache.setType(Geocache.CacheType.Multi);
+                cache.setType(CacheType.Multi);
                 break;
+            case "Letterbox Hybrid":
+                cache.setType(CacheType.Letterbox);
+            case "Event Cache":
+                cache.setType(CacheType.Event);
+            case "Mega-Event Cache":
+                cache.setType(CacheType.MegaEvent);
+            case "Cache In Trash Out Event":
+                cache.setType(CacheType.CITO);
+            case "Earthcache":
+                cache.setType(CacheType.EarthCache);
+            case "Virtual Cache":
+                cache.setType(CacheType.Virtual);
+            case "Webcam Cache":
+                cache.setType(CacheType.Webcam);
+            case "Wherigo Cache":
+                cache.setType(CacheType.Wherigo);
             default:
-                cache.setType(Geocache.CacheType.Other);
+                cache.setType(CacheType.Other);
                 break;
         }
         try {
@@ -192,6 +209,9 @@ public class GeoGPXParser {
         cache.setShortDescription(getSubElementContent(groundspeak,"groundspeak:short_description"));
         cache.setLongDescription(getSubElementContent(groundspeak,"groundspeak:long_description"));
         cache.setHint(getSubElementContent(groundspeak,"groundspeak:encoded_hints"));
+        
+        // Parse the attributes into a map where key is the attribute name and
+        // value is the value of that attribute:
         Map<String, Boolean> attributes = new HashMap<>();
         Element attributesElement = getSubElement(groundspeak,"groundspeak:attributes");
         if (attributesElement != null) {
@@ -241,7 +261,7 @@ public class GeoGPXParser {
 
         @Override
         public boolean accept(File dir, String name) {
-            return name.endsWith(".gpx");
+            return name.toLowerCase().endsWith(".gpx");
         }
     }
 }

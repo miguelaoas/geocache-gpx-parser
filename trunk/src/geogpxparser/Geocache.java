@@ -1,5 +1,5 @@
 /*
- * The MIT License - Copyright (c) 2011 ZeroOne
+ * The MIT License - Copyright (c) 2011-2012 ZeroOne
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,8 +34,8 @@ import org.joda.time.DateTime;
 public class Geocache {
 
     public enum CacheType {
-        Traditional, Multi, Mystery, Other
-    };
+        Traditional, Multi, Mystery, Other, Letterbox, 
+        Event, EarthCache, Virtual, Webcam, Wherigo, MegaEvent, CITO};
 
     public enum CacheSize {
         Micro, Small, Regular, Large, Not_chosen
