@@ -181,20 +181,28 @@ public class GeoGPXParser {
                 break;
             case "Letterbox Hybrid":
                 cache.setType(CacheType.Letterbox);
+                break;
             case "Event Cache":
                 cache.setType(CacheType.Event);
+                break;
             case "Mega-Event Cache":
                 cache.setType(CacheType.MegaEvent);
+                break;
             case "Cache In Trash Out Event":
                 cache.setType(CacheType.CITO);
+                break;
             case "Earthcache":
                 cache.setType(CacheType.EarthCache);
+                break;
             case "Virtual Cache":
                 cache.setType(CacheType.Virtual);
+                break;
             case "Webcam Cache":
                 cache.setType(CacheType.Webcam);
+                break;
             case "Wherigo Cache":
                 cache.setType(CacheType.Wherigo);
+                break;
             default:
                 cache.setType(CacheType.Other);
                 break;
