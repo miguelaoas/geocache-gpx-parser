@@ -46,8 +46,8 @@ import static geogpxparser.Geocache.CacheType;
 
 /**
  * This class can be used to parse geocaches from a Groundspeak .gpx file
- * into plain old Java objects (POJO). The caches are then saved as a
- * tab delimited .txt file.
+ * into plain old Java objects (POJO). The cache list can then be processed
+ * further and various text files can be created out of it.
  * 
  * @author ZeroOne
  */
@@ -65,13 +65,16 @@ public class GeoGPXParser {
         }
 
         GeoGPXParser parser = new GeoGPXParser(args[0]);
+        List<Geocache> caches = parser.parse();
 
         info("Writing the caches into a file...");
-        List<Geocache> caches = parser.parse();
         String tabularRepresentation = new CacheListParser().getInfoAsText(caches);
         writeFile("caches.txt", tabularRepresentation);
 
-
+        info("Writing owner stats into a file...");
+        String ownerStats = new OwnerStatsParser().getInfoAsText(caches);
+        writeFile("owners.txt", ownerStats);
+        
         info("Done!");
     }
 
