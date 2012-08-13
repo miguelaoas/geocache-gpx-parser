@@ -12,11 +12,11 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class CacheListParser implements ICachesToTextParser {
 
-    private final DateTimeFormatter OUTPUT_DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter OUTPUT_DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
+    private static final String separator = "\t";
 
     @Override
     public String getInfoAsText(final List<Geocache> caches) {
-        final String separator = "\t";
 
         StringBuilder sb = new StringBuilder();
         sb.append("gccode").append(separator);

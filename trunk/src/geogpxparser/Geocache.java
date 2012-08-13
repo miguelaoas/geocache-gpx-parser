@@ -34,10 +34,13 @@ import org.joda.time.DateTime;
 public class Geocache {
 
     public enum CacheType {
-        Traditional, Multi, Mystery, Other, Letterbox, 
-        Event, EarthCache, Virtual, Webcam, Wherigo, MegaEvent, CITO};
+
+        Traditional, Multi, Mystery, Letterbox, Event, EarthCache,
+        Virtual, Webcam, Wherigo, MegaEvent, CITO, Other
+    };
 
     public enum CacheSize {
+
         Micro, Small, Regular, Large, Not_chosen
     };
     private String gcCode;
@@ -180,15 +183,15 @@ public class Geocache {
     }
 
     public String getHint(boolean decrypted) {
-        if( decrypted ) {
+        if (decrypted) {
             return hint;
         }
         StringBuilder encryptedHint = new StringBuilder();
         for (char character : hint.toCharArray()) {
-            if(character >= 'A' && character <= 'Z') { 
-                encryptedHint.append((char)((((character+13) - 'A') % 26) + 'A'));
-            } else if(character >= 'a' && character <= 'z') {
-                encryptedHint.append((char)((((character+13)  - 'a') % 26) + 'a'));
+            if (character >= 'A' && character <= 'Z') {
+                encryptedHint.append((char) ((((character + 13) - 'A') % 26) + 'A'));
+            } else if (character >= 'a' && character <= 'z') {
+                encryptedHint.append((char) ((((character + 13) - 'a') % 26) + 'a'));
             } else {
                 encryptedHint.append(character);
             }
