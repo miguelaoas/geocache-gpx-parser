@@ -35,7 +35,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.w3c.dom.Document;
@@ -56,7 +55,6 @@ public class GeoGPXParser {
     private String file = null;
     
     private final DateTimeFormatter XML_DATE_TIME_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
-    private final DateTimeFormatter OUTPUT_DATE_TIME_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd");
 
     public static void main(String[] args) {
         if (args == null || args.length == 0) {
@@ -65,59 +63,35 @@ public class GeoGPXParser {
             System.out.println("2) java -jar GeoGPXParser.jar some/directory/with/gpx/files");
             System.exit(1);
         }
+
         GeoGPXParser parser = new GeoGPXParser(args[0]);
+
+        info("Writing the caches into a file...");
         List<Geocache> caches = parser.parse();
-        parser.saveTextFile("caches.txt", caches);
+        String tabularRepresentation = new CacheListParser().getInfoAsText(caches);
+        writeFile("caches.txt", tabularRepresentation);
+
+
         info("Done!");
     }
 
     private static void info(String text) {
         System.out.println(text);
     }
-    
+
     public GeoGPXParser(String path) {
         this.file = path;
     }
-    
+
     public List<Geocache> parse() {
         return parseXmlFilesToObjects(this.file);
     }
-    
-    public void saveTextFile(String fileName, List<Geocache> caches) {
-        info("Writing the caches into a file...");
-        final String separator = "\t";
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("gccode").append(separator);
-        sb.append("type").append(separator);
-        sb.append("name").append(separator);
-        sb.append("longitude").append(separator);
-        sb.append("latitude").append(separator);
-        sb.append("size").append(separator);
-        sb.append("difficulty").append(separator);
-        sb.append("terrain").append(separator);
-        sb.append("published").append(separator);
-        sb.append("owner").append(separator);
-        sb.append("\n");
-        
-        for (Geocache cache : caches) {
-            sb.append(cache.getGcCode()).append(separator);
-            sb.append(cache.getType()).append(separator);
-            sb.append(cache.getName().replace(separator, "")).append(separator);
-            sb.append(cache.getLongitude()).append(separator);
-            sb.append(cache.getLatitude()).append(separator);
-            sb.append(cache.getSize()).append(separator);
-            sb.append(cache.getDifficulty()).append(separator);
-            sb.append(cache.getTerrain()).append(separator);
-            sb.append(OUTPUT_DATE_TIME_FORMAT.print(cache.getPublished())).append(separator);
-            sb.append(cache.getOwner().replace(separator, "")).append(separator);
-            sb.append("\n");
-        }
-
+    private static void writeFile(final String fileName, final String contents) {
         try {
-            Files.write(Paths.get(fileName), sb.toString().getBytes());
+            Files.write(Paths.get(fileName), contents.getBytes());
         } catch (IOException ex) {
-            System.out.println("Saving the result file failed!");
+            System.out.println("Saving the file " + fileName + " failed!");
             ex.printStackTrace();
         }
     }
