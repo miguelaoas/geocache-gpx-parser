@@ -15,7 +15,7 @@ import java.util.Map.Entry;
 public class OwnerStatsParser implements ICachesToTextParser {
 
     private Map<String, Owner> owners = new LinkedHashMap<>();
-    private static final String separator = "\t";
+    private static final String SEPARATOR = "\t";
 
     /**
      * Returns a String of the tabular format with data about cache owners.
@@ -34,23 +34,23 @@ public class OwnerStatsParser implements ICachesToTextParser {
 
         // Create titles:
         StringBuilder sb = new StringBuilder();
-        sb.append("Owner").append(separator);
-        sb.append("Number of caches").append(separator);
-        sb.append("Number of cache types").append(separator);
+        sb.append("Owner").append(SEPARATOR);
+        sb.append("Number of caches").append(SEPARATOR);
+        sb.append("Number of cache types").append(SEPARATOR);
         for (CacheType cacheType : CacheType.values()) {
-            sb.append(cacheType).append(separator);
+            sb.append(cacheType).append(SEPARATOR);
         }
         sb.append("\n");
 
         // Create data rows:
         for (Owner owner : owners.values()) {
-            sb.append(owner.getName().replace(separator, "")).append(separator);
-            sb.append(owner.getTotalNumberOfCaches()).append(separator);
-            sb.append(owner.getNumberOfCacheTypes()).append(separator);
+            sb.append(owner.getName().replace(SEPARATOR, "")).append(SEPARATOR);
+            sb.append(owner.getTotalNumberOfCaches()).append(SEPARATOR);
+            sb.append(owner.getNumberOfCacheTypes()).append(SEPARATOR);
             Map<CacheType, Integer> cacheMap = owner.getCaches();
 
             for (Entry<CacheType, Integer> entry : cacheMap.entrySet()) {
-                sb.append(entry.getValue()).append(separator);
+                sb.append(entry.getValue()).append(SEPARATOR);
             }
             sb.append("\n");
         }
@@ -73,6 +73,10 @@ public class OwnerStatsParser implements ICachesToTextParser {
         owners.get(ownerName).addCache(cacheType);
     }
 
+    /**
+     * Represents someone who owns some geocaches. Keeps track of the name of
+     * the owner and the amount of different cache types they have.
+     */
     private class Owner {
 
         private final String name;
