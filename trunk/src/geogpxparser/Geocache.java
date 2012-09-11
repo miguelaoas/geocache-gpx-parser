@@ -1,5 +1,5 @@
 /*
- * The MIT License - Copyright (c) 2011-2012 ZeroOne
+ * The MIT License - Copyright (c) 2011-2012 Ville Saalo (http://coord.info/PR32K8V)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@ import org.joda.time.DateTime;
 
 /**
  * This class represents one geocache.
- * 
- * @author ZeroOne
+ *
+ * @author Ville Saalo (http://coord.info/PR32K8V)
  */
 public class Geocache {
 
@@ -201,6 +201,7 @@ public class Geocache {
 
     /**
      * Sets the hint for this cache. The hint should be set in plain text!
+     *
      * @param hint The hint to be set.
      */
     public void setHint(String hint) {

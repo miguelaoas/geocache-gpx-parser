@@ -7,8 +7,8 @@ import org.joda.time.format.DateTimeFormatter;
 /**
  * A parser for transforming a List of Geocache objects into table format,
  * represented as a long String object.
- * 
- * @author ZeroOne
+ *
+ * @author Ville Saalo (http://coord.info/PR32K8V)
  */
 public class CacheListParser implements ICachesToTextParser {
 

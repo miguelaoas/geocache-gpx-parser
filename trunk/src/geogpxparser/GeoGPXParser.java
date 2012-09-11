@@ -1,5 +1,5 @@
 /*
- * The MIT License - Copyright (c) 2011-2012 ZeroOne
+ * The MIT License - Copyright (c) 2011-2012 Ville Saalo (http://coord.info/PR32K8V)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,7 @@
  */
 package geogpxparser;
 
+import geogpxparser.Geocache.CacheType;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -42,18 +43,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import static geogpxparser.Geocache.CacheType;
 
 /**
- * This class can be used to parse geocaches from a Groundspeak .gpx file
- * into plain old Java objects (POJO). The cache list can then be processed
- * further and various text files can be created out of it.
- * 
- * @author ZeroOne
+ * This class can be used to parse geocaches from a Groundspeak .gpx file into
+ * plain old Java objects (POJO). The cache list can then be processed further
+ * and various text files can be created out of it.
+ *
+ * @author Ville Saalo (http://coord.info/PR32K8V)
  */
 public class GeoGPXParser {
+
     private String file = null;
-    
     private final DateTimeFormatter XML_DATE_TIME_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
     public static void main(String[] args) {
@@ -74,7 +74,7 @@ public class GeoGPXParser {
         info("Writing owner stats into a file...");
         String ownerStats = new OwnerStatsParser().getInfoAsText(caches);
         writeFile("owners.txt", ownerStats);
-        
+
         info("Done!");
     }
 
@@ -102,9 +102,9 @@ public class GeoGPXParser {
     private List<Geocache> parseXMLtoObjects(Document dom) {
         List<Geocache> geocaches = new LinkedList<>();
         Element root = dom.getDocumentElement();
-        
+
         NodeList caches = root.getElementsByTagName("wpt");
-        info(caches.getLength()+" caches found...");
+        info(caches.getLength() + " caches found...");
         if (caches == null || caches.getLength() < 1) {
             return new LinkedList<>();
         }
@@ -120,7 +120,7 @@ public class GeoGPXParser {
     private static Element getSubElement(Element parent, String subElementName) {
         return (Element) parent.getElementsByTagName(subElementName).item(0);
     }
-    
+
     private static String getSubElementContent(Element parent, String subElementName) {
         return getSubElement(parent, subElementName).getTextContent();
     }
@@ -138,15 +138,15 @@ public class GeoGPXParser {
         Element groundspeak = getSubElement(wptElement, "groundspeak:cache");
         cache.setArchived(Boolean.valueOf(groundspeak.getAttribute("archived")));
         cache.setAvailable(Boolean.valueOf(groundspeak.getAttribute("available")));
-        
-        cache.setName(getSubElementContent(groundspeak,"groundspeak:name"));
-        cache.setCountry(getSubElementContent(groundspeak,"groundspeak:country"));
-        cache.setState(getSubElementContent(groundspeak,"groundspeak:state"));
-        cache.setName(getSubElementContent(groundspeak,"groundspeak:name"));
-        cache.setCountry(getSubElementContent(groundspeak,"groundspeak:name"));
-        cache.setState(getSubElementContent(groundspeak,"groundspeak:state"));
-        cache.setOwner(getSubElementContent(groundspeak,"groundspeak:owner"));
-        switch (getSubElementContent(groundspeak,"groundspeak:type")) {
+
+        cache.setName(getSubElementContent(groundspeak, "groundspeak:name"));
+        cache.setCountry(getSubElementContent(groundspeak, "groundspeak:country"));
+        cache.setState(getSubElementContent(groundspeak, "groundspeak:state"));
+        cache.setName(getSubElementContent(groundspeak, "groundspeak:name"));
+        cache.setCountry(getSubElementContent(groundspeak, "groundspeak:name"));
+        cache.setState(getSubElementContent(groundspeak, "groundspeak:state"));
+        cache.setOwner(getSubElementContent(groundspeak, "groundspeak:owner"));
+        switch (getSubElementContent(groundspeak, "groundspeak:type")) {
             case "Traditional Cache":
                 cache.setType(CacheType.Traditional);
                 break;
@@ -185,31 +185,31 @@ public class GeoGPXParser {
                 break;
         }
         try {
-            cache.setSize(Geocache.CacheSize.valueOf(getSubElementContent(groundspeak,"groundspeak:container")));
+            cache.setSize(Geocache.CacheSize.valueOf(getSubElementContent(groundspeak, "groundspeak:container")));
         } catch (IllegalArgumentException ex) {
             cache.setSize(Geocache.CacheSize.Not_chosen);
         }
-        cache.setDifficulty(Float.parseFloat(getSubElementContent(groundspeak,"groundspeak:difficulty")));
-        cache.setTerrain(Float.parseFloat(getSubElementContent(groundspeak,"groundspeak:terrain")));
-        cache.setShortDescription(getSubElementContent(groundspeak,"groundspeak:short_description"));
-        cache.setLongDescription(getSubElementContent(groundspeak,"groundspeak:long_description"));
-        cache.setHint(getSubElementContent(groundspeak,"groundspeak:encoded_hints"));
-        
+        cache.setDifficulty(Float.parseFloat(getSubElementContent(groundspeak, "groundspeak:difficulty")));
+        cache.setTerrain(Float.parseFloat(getSubElementContent(groundspeak, "groundspeak:terrain")));
+        cache.setShortDescription(getSubElementContent(groundspeak, "groundspeak:short_description"));
+        cache.setLongDescription(getSubElementContent(groundspeak, "groundspeak:long_description"));
+        cache.setHint(getSubElementContent(groundspeak, "groundspeak:encoded_hints"));
+
         // Parse the attributes into a map where key is the attribute name and
         // value is the value of that attribute:
         Map<String, Boolean> attributes = new HashMap<>();
-        Element attributesElement = getSubElement(groundspeak,"groundspeak:attributes");
+        Element attributesElement = getSubElement(groundspeak, "groundspeak:attributes");
         if (attributesElement != null) {
             Node attributeNode = attributesElement.getFirstChild();
             while (attributeNode != null) {
-                if (attributeNode != null && attributeNode instanceof Element ) {
+                if (attributeNode != null && attributeNode instanceof Element) {
                     Element attributeElement = (Element) attributeNode;
                     attributes.put(attributeElement.getTagName(), "1".equals(attributeElement.getAttribute("inc")));
                 }
                 attributeNode = attributeNode.getNextSibling();
             }
         }
-        
+
         return cache;
     }
 
@@ -223,10 +223,10 @@ public class GeoGPXParser {
             files = new File[1];
             files[0] = new File(path);
         }
-        info("Found "+files.length+" files.");
+        info("Found " + files.length + " files.");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         for (File xmlFile : files) {
-            info("Parsing file "+xmlFile+"...");
+            info("Parsing file " + xmlFile + "...");
             try {
                 DocumentBuilder db = dbFactory.newDocumentBuilder();
                 Document xml = db.parse(xmlFile);
@@ -235,7 +235,7 @@ public class GeoGPXParser {
                 System.err.println("Error in parsing XML!");
                 xmlException.printStackTrace();
             } catch (IllegalArgumentException | IOException ioException) {
-                System.err.println("Error in reading file '"+xmlFile+"'!");
+                System.err.println("Error in reading file '" + xmlFile + "'!");
                 ioException.printStackTrace();
             }
         }
