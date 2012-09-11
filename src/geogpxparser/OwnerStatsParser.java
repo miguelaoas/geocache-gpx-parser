@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 /**
  * Parses owner statistics from the given list of caches: the number of caches
  * and different cache types each owner has.
- * 
- * @author ZeroOne
+ *
+ * @author Ville Saalo (http://coord.info/PR32K8V)
  */
 public class OwnerStatsParser implements ICachesToTextParser {
 
@@ -19,9 +19,10 @@ public class OwnerStatsParser implements ICachesToTextParser {
 
     /**
      * Returns a String of the tabular format with data about cache owners.
-     * 
+     *
      * @param caches A List of Geocache objects
-     * @return A String that can be saved into a file and opened in a spreadsheet program.
+     * @return A String that can be saved into a file and opened in a
+     * spreadsheet program.
      */
     @Override
     public String getInfoAsText(List<Geocache> caches) {
@@ -46,8 +47,8 @@ public class OwnerStatsParser implements ICachesToTextParser {
             sb.append(owner.getName().replace(separator, "")).append(separator);
             sb.append(owner.getTotalNumberOfCaches()).append(separator);
             sb.append(owner.getNumberOfCacheTypes()).append(separator);
-            Map<CacheType,Integer> cacheMap = owner.getCaches();
-            
+            Map<CacheType, Integer> cacheMap = owner.getCaches();
+
             for (Entry<CacheType, Integer> entry : cacheMap.entrySet()) {
                 sb.append(entry.getValue()).append(separator);
             }
@@ -59,8 +60,8 @@ public class OwnerStatsParser implements ICachesToTextParser {
 
     /**
      * Initializes a new owner in the map if required, then adds +1 to the
-     * amount of the caches of the given type. 
-     * 
+     * amount of the caches of the given type.
+     *
      * @param owner Name of the cache owner
      * @param cacheType Type of the cache
      */
@@ -109,6 +110,7 @@ public class OwnerStatsParser implements ICachesToTextParser {
             return result;
         }
 
+        @Override
         public int hashCode() {
             return name.hashCode();
         }
